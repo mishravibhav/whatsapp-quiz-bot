@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "test",
-    "start:prod": "NODE_ENV=production nodemon --max-old-space-size=6000 src/server.js",
-    "start:dev": "NODE_ENV=development nodemon --max-old-space-size=6000 src/server.js"
+    "build": "echo 'No build step needed for plain JS backend'",
+    "start:prod": "NODE_ENV=production node --max-old-space-size=6000 src/server.js",
+    "start:dev": "NODE_ENV=development node --max-old-space-size=6000 src/server.js"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "baileys": "github:whiskeysockets/baileys",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "helmet": "^8.1.0",
     "joi": "^17.13.3",
     "mongoose": "^8.15.1",
     "socket.io": "^4.8.1"
