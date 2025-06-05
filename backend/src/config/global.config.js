@@ -5,7 +5,7 @@ require('dotenv').config({ path: path.resolve(__dirname, `../${env}.env`) });
 
 module.exports = {
     whitelisted_domains: {
-        origin: "http://localhost:5174"
+        origin: "http://localhost:5000"
         // methods: ["GET", "POST"],
     },
     database: {
