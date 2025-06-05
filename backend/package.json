@@ -1,0 +1,32 @@
+{
+  "name": "whatsapp-quiz-bot-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mishravibhav/whatsapp-quiz-bot.git"
+  },
+  "keywords": [
+    "whatsapp",
+    "bot"
+  ],
+  "author": "VibhavMishra",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mishravibhav/whatsapp-quiz-bot/issues"
+  },
+  "homepage": "https://github.com/mishravibhav/whatsapp-quiz-bot#readme",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
+    "axios": "^1.9.0",
+    "baileys": "github:whiskeysockets/baileys",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.1",
+    "socket.io": "^4.8.1"
+  }
+}
