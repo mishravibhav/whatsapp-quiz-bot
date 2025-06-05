@@ -4,8 +4,8 @@ const analyticsRoutes = require('./analytics.routes');
 
 // middleware
 const router = express.Router();
-router.use("/quiz", userRoutes);
-router.use("/analytics", analyticsRoutes);
+router.use("/survey/:surveyId", userRoutes);
+router.use("/analytics/:surveyId", analyticsRoutes);
 
 
 router.get('/health',(req,res)=>{

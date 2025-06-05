@@ -1,21 +1,19 @@
 const express = require('express');
 const http = require('http');
+const cors = require('cors');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
-const indexRoutes = require('./routes/user.routes');
+const indexRoutes = require('./routes/index.route');
 const errorMiddleware = require('./middlewares/app.middleware').errorResponder;
 const startBot = require('./bot');
-require('dotenv').config();
+const config = require('../src/config/global.config')
 
 const app = express();
-const server = http.createServer(app); // 👈 wrap express in HTTP server
-const io = new Server(server, {
-  cors: {
-    origin: '*',
-  },
-});
+const server = http.createServer(app);
+const io = new Server(server, config.whitelisted_domains_and_methods);
 
 app.use(express.json());
+app.use(cors({ origin: config.whitelisted_domains_and_methods }));
 app.use('/v1/api/', indexRoutes);
 app.use(errorMiddleware);
 

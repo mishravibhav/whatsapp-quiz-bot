@@ -1,6 +1,5 @@
-const path = require('path')
-const mongoose = require('mongoose');
 const config = require('../config/global.config')
+const mongoose = require('mongoose');
 
 const connectDB = async () => {
 

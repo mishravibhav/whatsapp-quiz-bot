@@ -12,7 +12,7 @@ async function getOrCreateSession(number) {
   return session;
 }
 
-async function handleAnswer(number, text,ip) {
+async function handleAnswer(number, text,ip,question_text) {
   const session = await getOrCreateSession(number);
 
   if (session.completed) {
@@ -22,11 +22,12 @@ async function handleAnswer(number, text,ip) {
   const { city, state, country } = await getLocationFromIP(ip);
 
   await logEvent(number, `question_${session.currentQuestion}_answered`, session.currentQuestion,ip,city,state,country);
-
-  session.answers.push(text);
+  const ans_obj = {}
+  ans_obj[question_text] = text
+  session.answers.push(JSON.stringify(ans_obj));
   session.currentQuestion += 1;
 
-  if (session.currentQuestion < 5) {
+  if (session.currentQuestion < 6) {
     const nextQ = getNextQuestion(session.currentQuestion);
     await session.save();
     return { message: nextQ };
