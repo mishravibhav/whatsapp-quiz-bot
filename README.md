@@ -1,7 +1,3 @@
-Here's how you can split your project into **two separate repos** — one for backend and one for frontend — and create a dedicated `README.md` for **each** with project structure and setup instructions.
-
----
-
 ## ✅ Backend `README.md` (Repo: `whatsapp-quiz-bot`)
 
 **File:** [`backend/README.md`](https://github.com/mishravibhav/whatsapp-quiz-bot)
