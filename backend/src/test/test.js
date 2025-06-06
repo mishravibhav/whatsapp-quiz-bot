@@ -1,15 +1,30 @@
-const AnalyticsEvent = require('../models/AnalyticsEvent'); // Mongoose model
-const tryCatch = require('../utils/tryCatch')
+const mongoose = require('mongoose');
 
-const getQuizEngagementReportController = async (req, res) => {
+// 1. MongoDB connection string
+const MONGODB_URI = 'mongodb+srv://mishravibhav:Vibhav1610%23@cluster0.rbmmxu8.mongodb.net/quizbot?retryWrites=true&w=majority'; // update this if needed
+
+// 2. Event schema
+const eventSchema = new mongoose.Schema({
+  number: String,
+  event_name: String,
+  ip: String,
+  city: String,
+  state: String,
+  country: String,
+  event_time: { type: Date, default: Date.now }
+});
+const Event = mongoose.model('AnalyticsEvent', eventSchema);
+
+// 3. Reporting logic
+async function getQuizEngagementReport() {
   try {
-    const usersStarted = await AnalyticsEvent.distinct('number', { event_name: 'quiz_started' });
+    const usersStarted = await Event.distinct('number', { event_name: 'quiz_started' });
     const totalUsersStarted = usersStarted.length;
 
-    const usersCompleted = await AnalyticsEvent.distinct('number', { event_name: 'quiz_completed' });
+    const usersCompleted = await Event.distinct('number', { event_name: 'quiz_completed' });
     const totalUsersCompleted = usersCompleted.length;
 
-    const userEvents = await AnalyticsEvent.aggregate([
+    const userEvents = await Event.aggregate([
       { $match: { number: { $in: usersStarted } } },
       { $sort: { event_time: 1 } },
       {
@@ -32,7 +47,6 @@ const getQuizEngagementReportController = async (req, res) => {
 
     userEvents.forEach(({ events }) => {
       let stepsVisited = [];
-
       for (let i = 0; i < events.length; i++) {
         const ev = events[i];
 
@@ -43,6 +57,7 @@ const getQuizEngagementReportController = async (req, res) => {
 
           stepReachCount[stepIndex] = (stepReachCount[stepIndex] || 0) + 1;
 
+          // Time spent = next event - current event
           if (i + 1 < events.length) {
             const nextTime = new Date(events[i + 1].event_time);
             const timeSpent = (nextTime - new Date(ev.event_time)) / 1000;
@@ -72,50 +87,28 @@ const getQuizEngagementReportController = async (req, res) => {
       avgTimePerStep[step] = (stepTotalTime[step] / stepUserCounts[step]).toFixed(2);
     });
 
-    const report = {
+    return {
       totalUsersStarted,
       totalUsersCompleted,
-      completionRatePercent:
-        totalUsersStarted > 0
-          ? ((totalUsersCompleted / totalUsersStarted) * 100).toFixed(2)
-          : '0.00',
+      completionRatePercent: ((totalUsersCompleted / totalUsersStarted) * 100).toFixed(2),
       stepReachCount,
       stepDropOffCount,
       stepDropOffPercent,
       avgTimePerStepInSeconds: avgTimePerStep
     };
-
-    res.status(200).json({ success: true, response: report });
   } catch (err) {
     console.error('❌ Error generating report:', err);
-    res.status(500).json({ success: false, error: err.message });
+    throw err;
   }
-};
+}
 
-
-const getSurveyLogsController = tryCatch(async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
-  
-    const total = await AnalyticsEvent.countDocuments();
-    const logs = await AnalyticsEvent.find()
-      .sort({ event_time: -1 }) // Most recent first
-      .skip(skip)
-      .limit(limit)
-      .lean();
-  
-    res.status(200).json({
-      success: true,
-      response: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-        data: logs
-      }
-    });
+// 4. Execute
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(async () => {
+    const report = await getQuizEngagementReport();
+    console.log('📊 Quiz Engagement Report:\n', JSON.stringify(report, null, 2));
+    await mongoose.disconnect();
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err);
   });
-  
-
-module.exports = { getQuizEngagementReportController,getSurveyLogsController };

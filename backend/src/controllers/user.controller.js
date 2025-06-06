@@ -1,4 +1,5 @@
 const { handleAnswer } = require('../services/user.service')
+const tryCatch = require('../utils/tryCatch')
 
 const handleQuizResponse = async (req, res, next) => {
   try {

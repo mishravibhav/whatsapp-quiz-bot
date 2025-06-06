@@ -5,7 +5,7 @@ const analyticsRoutes = require('./analytics.routes');
 // middleware
 const router = express.Router();
 router.use("/survey/:surveyId", userRoutes);
-router.use("/analytics/:surveyId", analyticsRoutes);
+router.use("/analytics/", analyticsRoutes);
 
 
 router.get('/health',(req,res)=>{

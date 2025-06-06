@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { exportLogsCSV } = require('../controllers/analytics.controller');
+const { getQuizEngagementReportController,getSurveyLogsController } = require('../controllers/analytics.controller');
 
-router.get('/export', exportLogsCSV); // GET /analytics/export
+router.get('/aggrigated-report', getQuizEngagementReportController);
+router.get('/survey-logs', getSurveyLogsController);
 
 module.exports = router;
